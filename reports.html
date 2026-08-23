@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports & Analysis — Attendance System</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- Mobile top bar -->
+    <div class="mobile-topbar">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span>Attendance System</span>
+      <span style="width:24px;"></span>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-brand"></div>
+      <div class="sidebar-nav">
+        <a href="courses.html">
+          Courses & Lectures
+        </a>
+        <a href="students.html">
+           Students
+        </a>
+        <a href="attendance-search.html">
+          Attendance Search
+        </a>
+        <a href="reports.html" class="active">
+           Reports & Analysis
+        </a>
+      </div>
+      <div class="sidebar-logout">
+        <a href="index.html">
+           Logout
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="placeholder-page">
+        <h1>Reports & Analysis — Coming Soon</h1>
+        <p>We're working on detailed analytics and exportable reports. Check back soon.</p>
+      </div>
+    </main>
+
+  </div>
+<script type="module" src="js/common.js"></script>
+<script type="module" src="js/reports.js"></script>
+</body>
+</html>

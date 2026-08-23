@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enrollment — Attendance System</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- Mobile top bar -->
+    <div class="mobile-topbar">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span>Attendance System</span>
+      <span style="width:24px;"></span>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-brand">Greenfield High</div>
+      <div class="sidebar-nav">
+        <a href="courses.html">
+          Courses & Lectures
+        </a>
+        <a href="students.html" class="active">
+           Students
+        </a>
+        <a href="attendance-search.html">
+           Attendance Search
+        </a>
+        <a href="reports.html">
+           Reports & Analysis
+        </a>
+      </div>
+      <div class="sidebar-logout">
+        <a href="index.html">
+           Logout
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1>Enroll New Student</h1>
+        <p class="subtext">Create a student record, then capture biometric data.</p>
+      </div>
+
+      <!-- Duplicate allocation warning (hidden by default, toggled for demo) -->
+      <div class="alert alert-warning" id="duplicateAlert" style="display:none;">
+        <span>⚠️ This Reg No. appears to already be allocated to another student. Please double-check before proceeding.</span>
+        <button class="alert-dismiss" id="dismissAlertBtn" aria-label="Dismiss">✕</button>
+      </div>
+
+      <div class="card" style="max-width: 480px;">
+        <form id="enrollForm">
+          <div class="form-group">
+            <label for="studentName">Full Name</label>
+            <input type="text" id="studentName" placeholder="e.g. Amara Chukwu" required />
+          </div>
+          <div class="form-group">
+            <label for="studentRegNo">Reg No</label>
+            <input type="text" id="studentRegNo" placeholder="e.g. STU1011" required />
+          </div>
+          <button type="submit" class="btn btn-primary" id="createStudentBtn">Create Student</button>
+        </form>
+
+        <!-- Capture buttons, revealed after student creation -->
+        <div class="capture-row" id="captureRow" style="display:none;">
+          <div>
+            <button class="btn btn-secondary" id="captureFingerprintBtn">Capture Fingerprint</button>
+            <div class="capture-status" id="fingerprintStatus"></div>
+          </div>
+          <div>
+            <button class="btn btn-secondary" id="captureRfidBtn">Capture RFID</button>
+            <div class="capture-status" id="rfidStatus"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden demo trigger for showing the duplicate warning state -->
+      <!-- <button id="demoShowDuplicateAlert">Show duplicate warning (demo)</button> -->
+
+    </main>
+  </div>
+
+ <script type="module" src="js/common.js"></script>
+ <script type="module" src="js/enrollment.js"></script>
+</body>
+</html>
