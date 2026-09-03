@@ -26,22 +26,34 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Sidebar -->
+  <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand"></div>
       <div class="sidebar-nav">
+         <a href="live-session.html">
+           Live Session
+        </a>
         <a href="courses.html">
-          Courses & Lectures
+           Courses
         </a>
         <a href="students.html">
            Students
         </a>
-        <a href="attendance-search.html">
-          Attendance Search
+
+        <a href="create-session.html" >
+        Create Session
+        </a>
+        <a href="lecture-history.html">
+           Lecture History
+        </a>
+
+         <a href="enrollment.html">
+           Enroll
         </a>
         <a href="reports.html" class="active">
            Reports & Analysis
         </a>
+       
       </div>
       <div class="sidebar-logout">
         <a href="index.html">
@@ -49,14 +61,52 @@
         </a>
       </div>
     </nav>
-
     <!-- Main content -->
     <main class="main-content">
-      <div class="placeholder-page">
-        <h1>Reports & Analysis — Coming Soon</h1>
-        <p>We're working on detailed analytics and exportable reports. Check back soon.</p>
-      </div>
-    </main>
+  <div class="page-header">
+    <h1>Reports & Analysis</h1>
+    <p class="subtext">View attendance records by course and student.</p>
+  </div>
+
+  <section class="panel-section">
+    <div class="card">
+      <form id="reportForm" class="form-inline">
+        <div class="form-group">
+          <label for="reportCourse">Course</label>
+          <select id="reportCourse" required>
+            <option value="">Select a course</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="position: relative;">
+          <label for="studentSearch">Student (optional)</label>
+          <input type="text" id="studentSearch" placeholder="All Students" autocomplete="off" />
+          <div id="studentSuggestions" class="suggestions-dropdown" style="display: none;"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel-section">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Reg No</th>
+            <th>Sessions Attended</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">
+          <tr><td colspan="4" style="text-align:center;color:#999;">Select a course and generate a report.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
 
   </div>
 <script type="module" src="js/common.js"></script>

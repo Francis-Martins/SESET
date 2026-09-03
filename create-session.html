@@ -20,7 +20,7 @@
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
-      <span>Attendance System</span>
+      <span>Create Session</span>
       <span style="width:24px;"></span>
     </div>
 
@@ -34,20 +34,20 @@
          <a href="live-session.html">
            Live Session
         </a>
-        <a href="courses.html" class="active">
+        <a href="courses.html">
            Courses
         </a>
         <a href="students.html">
            Students
         </a>
 
-        <a href="create-session.html" >
+        <a href="create-session.html" class="active">
         Create Session
         </a>
         <a href="lecture-history.html">
            Lecture History
         </a>
-        
+       
          <a href="enrollment.html">
            Enroll
         </a>
@@ -65,43 +65,43 @@
 
     <!-- Main content -->
     <main class="main-content">
-      <div class="page-header">
-        <h1>Courses & Lectures</h1>
-        <p class="subtext">Manage courses and start new lecture sessions.</p>
-      </div>
+      
 
-      <!-- Section 1: Create New Course -->
-      <section class="panel-section">        
 
-        <div class="table-wrapper" style="margin-top: 20px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Course Title</th>
-                <th>Course Code</th>
-                <th>Date Added</th>
-              </tr>
-            </thead>
-            <tbody id="coursesTableBody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
+      <!-- Section 2: Start New Lecture Session -->
+      <section class="panel-section">
+        <h1>Start New Lecture Session</h1>
+        <div class="card">
+          <form id="startSessionForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sessionCourse">Course</label>
+                <select id="sessionCourse" required>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="lectureTitle">Lecture Title</label>
+                <input type="text" id="lectureTitle" placeholder="e.g. Cell Structure" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="lectureDate">Date</label>
+                <input type="date" id="lectureDate" required />
+              </div>
+              <div class="form-group">
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" required />
+              </div>
+              <div class="form-group">
+                <label for="endTime">End Time</label>
+                <input type="time" id="endTime" required />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Start Session</button>
+          </form>
         </div>
-
-      <h2 style="margin-top: 40px;">Create New Course</h2>
-<div class="card">
-  <form id="createCourseForm" class="form-inline">
-    <div class="form-group">
-      <label for="courseTitle">Course Title</label>
-      <input type="text" id="courseTitle" placeholder="e.g. Introduction to Biology" required />
-    </div>
-    <div class="form-group">
-      <label for="courseCode">Course Code</label>
-      <input type="text" id="courseCode" placeholder="e.g. BIO101" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Add Course</button>
-  </form>
-</div>
       </section>
 
       
@@ -110,6 +110,7 @@
   </div>
 
 <script type="module" src="js/common.js"></script>
-<script type="module" src="js/courses.js"></script>
+<script type="module" src="js/create-session.js"></script>
+
 </body>
 </html>

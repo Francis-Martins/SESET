@@ -34,7 +34,7 @@
          <a href="live-session.html">
            Live Session
         </a>
-        <a href="courses.html" class="active">
+        <a href="courses.html">
            Courses
         </a>
         <a href="students.html">
@@ -44,7 +44,7 @@
         <a href="create-session.html" >
         Create Session
         </a>
-        <a href="lecture-history.html">
+        <a href="lecture-history.html" class="active">
            Lecture History
         </a>
         
@@ -65,51 +65,73 @@
 
     <!-- Main content -->
     <main class="main-content">
-      <div class="page-header">
-        <h1>Courses & Lectures</h1>
-        <p class="subtext">Manage courses and start new lecture sessions.</p>
-      </div>
+     
 
-      <!-- Section 1: Create New Course -->
-      <section class="panel-section">        
+    
 
-        <div class="table-wrapper" style="margin-top: 20px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Course Title</th>
-                <th>Course Code</th>
-                <th>Date Added</th>
-              </tr>
-            </thead>
-            <tbody id="coursesTableBody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-
-      <h2 style="margin-top: 40px;">Create New Course</h2>
-<div class="card">
-  <form id="createCourseForm" class="form-inline">
-    <div class="form-group">
-      <label for="courseTitle">Course Title</label>
-      <input type="text" id="courseTitle" placeholder="e.g. Introduction to Biology" required />
-    </div>
-    <div class="form-group">
-      <label for="courseCode">Course Code</label>
-      <input type="text" id="courseCode" placeholder="e.g. BIO101" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Add Course</button>
-  </form>
+      <!-- Section 3: Lecture History -->
+<div class="page-header">
+  <h1>Lecture History</h1>
+  <p class="subtext">View past and active lecture sessions.</p>
 </div>
-      </section>
 
-      
+<section class="panel-section">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>
+            Course Code
+            <select id="courseCodeFilter" class="header-dropdown">
+              <option value="">All</option>
+            </select>
+          </th>
+          <th>Lecture Title</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Open</th>
+        </tr>
+      </thead>
+      <tbody id="lectureHistoryBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Attendance sheet — hidden until "Open" is clicked -->
+<section class="panel-section" id="attendanceSheetSection" style="display: none;">
+  <div class="attendance-sheet" id="attendanceSheet">
+    <div class="sheet-header">
+      <h2 id="sheetCourseCode"></h2>
+      <h3 id="sheetLectureTitle"></h3>
+      <p id="sheetDate"></p>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Reg No</th>
+            <th>Time</th>
+            <th>Mode</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceSheetBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button id="printAttendanceBtn" class="btn btn-primary" style="margin-top: 16px;">Print</button>
+</section>
 
     </main>
   </div>
 
 <script type="module" src="js/common.js"></script>
-<script type="module" src="js/courses.js"></script>
+<script type="module" src="js/lecture-history.js"></script>
 </body>
 </html>

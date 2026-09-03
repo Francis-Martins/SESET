@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Live Session — Attendance System</title>
-
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="newlivesession.css" />
 </head>
 <body>
 
@@ -26,22 +26,34 @@
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-   <!-- Sidebar -->
+ <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand"></div>
       <div class="sidebar-nav">
-        <a href="courses.html" class = "active">
-          Courses & Lectures
+         <a href="live-session.html" class="active">
+           Live Session
+        </a>
+        <a href="courses.html">
+           Courses
         </a>
         <a href="students.html">
            Students
         </a>
-        <a href="attendance-search.html">
-          Attendance Search
+
+        <a href="create-session.html">
+        Create Session
         </a>
-        <a href="reports.html" >
+        <a href="lecture-history.html">
+           Lecture History
+        </a>
+        
+         <a href="enrollment.html">
+           Enroll
+        </a>
+        <a href="reports.html">
            Reports & Analysis
         </a>
+       
       </div>
       <div class="sidebar-logout">
         <a href="index.html">
@@ -51,51 +63,51 @@
     </nav>
 
     <!-- Main content -->
-    <main class="main-content">
+        <main class="main-content">
 
-      <div class="session-header">
-        <div>
-          <h1 id="lectureTitleDisplay">Lecture Title — Course Code</h1>
-          <p class="session-meta" id="sessionDateDisplay">Date</p>
-        </div>
-        <div class="session-meta" id="timeRemainingDisplay">
-          Time remaining: --:--
-        </div>
+      <div class="placeholder-page" id="noSessionPlaceholder">
+        <h1>No Active Session</h1>
+        <p>Start a new lecture session to begin taking attendance.</p>
+        <a href="create-session.html" class="btn btn-primary">Go to Create Session</a>
       </div>
 
-      <div class="session-status-row">
-        <span class="badge badge-online" id="deviceStatusBadge">Device Online</span>
-        <div class="stat-card">
-          <span class="stat-value" id="checkedInCount">0</span>
-          <span class="stat-label">students checked in</span>
-        </div>
-      </div>
+      <div id="liveSessionContent" style="display: none;">
+        <header>
+          <div class="title-block">
+            <h1>Attendance Log</h1>
+          </div>
+          <div class="meta">
+            <div id="status" class="status pending">Connecting…</div>
+          </div>
+        </header>
 
-      <div class="table-wrapper">
+        <div class="toolbar">
+          <span id="count">0 records</span>
+          <span>Auto-updates live</span>
+          <button id="saveBtn" class="save-btn">Save Session</button>
+        </div>
+
         <table>
           <thead>
             <tr>
+              <th>Date</th>
               <th>Time</th>
               <th>Name</th>
-              <th>Reg No</th>
               <th>Mode</th>
             </tr>
           </thead>
-          <tbody id="liveAttendanceBody">
-            <!-- Populated by JS, new rows added in real time -->
-          </tbody>
+          <tbody id="rows"></tbody>
         </table>
-      </div>
 
-      <div class="session-actions">
-        <button class="btn btn-secondary" id="printBtn">Print / Export</button>
-        <button class="btn btn-primary" id="endSessionBtn">End Session</button>
+        <div id="empty">No attendance records yet.</div>
       </div>
 
     </main>
   </div>
+  </div>
 
-  <script type="module" src="js/common.js"></script>
-  <script type="module" src="js/live-session.js"></script>
+  <script type="module" src="newlivesession.js"></script>
+  <!-- <script type = "module" src="js/common.js"></script> -->
+  <!-- <script type="module" src="js/live-session.js"></script> -->
 </body>
 </html>

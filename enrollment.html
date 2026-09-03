@@ -20,7 +20,7 @@
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
-      <span>Attendance System</span>
+      <!-- <span>Attendance System</span> -->
       <span style="width:24px;"></span>
     </div>
 
@@ -28,20 +28,32 @@
 
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
-      <div class="sidebar-brand">Greenfield High</div>
+      <div class="sidebar-brand"></div>
       <div class="sidebar-nav">
-        <a href="courses.html">
-          Courses & Lectures
+         <a href="live-session.html">
+           Live Session
         </a>
-        <a href="students.html" class="active">
+        <a href="courses.html">
+           Courses
+        </a>
+        <a href="students.html">
            Students
         </a>
-        <a href="attendance-search.html">
-           Attendance Search
+
+        <a href="create-session.html">
+        Create Session
+        </a>
+        <a href="lecture-history.html">
+           Lecture History
+        </a>
+       
+         <a href="enrollment.html" class="active">
+           Enroll
         </a>
         <a href="reports.html">
            Reports & Analysis
         </a>
+       
       </div>
       <div class="sidebar-logout">
         <a href="index.html">
@@ -52,50 +64,227 @@
 
     <!-- Main content -->
     <main class="main-content">
-      <div class="page-header">
-        <h1>Enroll New Student</h1>
-        <p class="subtext">Create a student record, then capture biometric data.</p>
-      </div>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fingerprint & RFID Enroll & Manage</title>
 
-      <!-- Duplicate allocation warning (hidden by default, toggled for demo) -->
-      <div class="alert alert-warning" id="duplicateAlert" style="display:none;">
-        <span>⚠️ This Reg No. appears to already be allocated to another student. Please double-check before proceeding.</span>
-        <button class="alert-dismiss" id="dismissAlertBtn" aria-label="Dismiss">✕</button>
-      </div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-      <div class="card" style="max-width: 480px;">
-        <form id="enrollForm">
-          <div class="form-group">
-            <label for="studentName">Full Name</label>
-            <input type="text" id="studentName" placeholder="e.g. Amara Chukwu" required />
-          </div>
-          <div class="form-group">
-            <label for="studentRegNo">Reg No</label>
-            <input type="text" id="studentRegNo" placeholder="e.g. STU1011" required />
-          </div>
-          <button type="submit" class="btn btn-primary" id="createStudentBtn">Create Student</button>
-        </form>
 
-        <!-- Capture buttons, revealed after student creation -->
-        <div class="capture-row" id="captureRow" style="display:none;">
-          <div>
-            <button class="btn btn-secondary" id="captureFingerprintBtn">Capture Fingerprint</button>
-            <div class="capture-status" id="fingerprintStatus"></div>
-          </div>
-          <div>
-            <button class="btn btn-secondary" id="captureRfidBtn">Capture RFID</button>
-            <div class="capture-status" id="rfidStatus"></div>
-          </div>
-        </div>
-      </div>
+<style>
 
-      <!-- Hidden demo trigger for showing the duplicate warning state -->
-      <!-- <button id="demoShowDuplicateAlert">Show duplicate warning (demo)</button> -->
+  :root {
+
+  --bg: #f6f4ee;
+
+  --panel: #efece0;
+
+  --border: #d8d3c4;
+
+  --text: #1c1f1a;
+
+  --muted: #6e7268;
+
+  --accent: #5a7d5a;
+
+  --green: #5a7d5a;
+
+  --red: #a3452f;
+
+  --yellow: #b8925a;
+
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+.subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+.grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 960px; margin: 0 auto; }
+
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+
+.card h2 { font-size: 15px; margin: 0 0 14px; }
+
+label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+input, select {
+
+  width: 100%; background: var(--panel); border: 1px solid var(--border); color: var(--text);
+
+  padding: 10px 12px; border-radius: 8px; font-size: 14px; margin-bottom: 14px;
+
+}
+
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+
+button {
+
+  background: var(--accent); color: white; border: none; padding: 10px 16px;
+
+  border-radius: 8px; font-size: 14px; cursor: pointer; width: 100%;
+
+}
+
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+button.secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 8px; }
+
+button.danger { background: var(--red); }
+
+.status-box {
+
+  margin-top: 14px; padding: 10px 12px; border-radius: 8px; font-size: 13px;
+
+  border: 1px solid var(--border); background: var(--panel); color: var(--muted); min-height: 18px;
+
+}
+
+.status-box.pending { border-color: var(--yellow); color: var(--yellow); }
+
+.status-box.success { border-color: var(--green); color: var(--green); }
+
+.status-box.error   { border-color: var(--red); color: var(--red); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); }
+
+th { color: var(--muted); font-weight: 500; }
+
+.row-delete { width: auto; padding: 4px 10px; background: var(--red); }
+
+.empty { color: var(--muted); text-align: center; padding: 16px 0; }
+
+.full-width { grid-column: 1 / -1; }
+
+.badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+
+.badge.fp { background: #dde4f0; color: #3a5a99; }
+
+.badge.rfid { background: #dbe8dc; color: #3d6b45; }
+
+</style>
+
+</head>
+
+  <h1 style="margin-bottom: 40px;">Fingerprint & RFID Enroll & Manage</h1>
+
+
+
+  <div class="grid">
+
+
+    <!-- Enroll -->
+
+    <div class="card">
+
+      <h2>Enroll New User</h2>
+
+      <label for="enrollName">Name</label>
+
+      <input id="enrollName" type="text" placeholder="e.g. John Doe">
+<label for="enrollRegNo">Reg No</label>
+<input id="enrollRegNo" type="text" placeholder="ELE514">
+
+      <label for="enrollDept" style="display: none;">Department (optional )</label>
+
+      <input id="enrollDept" style="display: none;" type="text" placeholder="e.g. Engineering">
+
+
+      <label for="enrollMethod">Enroll Method</label>
+
+      <select id="enrollMethod">
+
+        <option value="fingerprint">Fingerprint</option>
+
+        <option value="rfid">RFID</option>
+
+        <option value="both">Both</option>
+
+      </select>
+
+
+      <button id="enrollBtn">Start Enrollment</button>
+
+      <div id="enrollStatus" class="status-box idle">Idle.</div>
+
+    </div>
+
+
+    <!-- Delete -->
+
+    <div class="card">
+
+      <h2>Delete User</h2>
+
+      <label for="deleteUserSelect">Select User</label>
+
+      <select id="deleteUserSelect">
+
+        <option value="">-- select --</option>
+
+      </select>
+
+
+      <button id="deleteBtn" class="danger">Delete</button>
+
+      <div id="deleteStatus" class="status-box idle">Idle.</div>
+
+
+      <button id="resetBtn" class="secondary">Reset Stuck Command</button>
+
+    </div>
+
+
+    <!-- Enrolled users table -->
+
+    <div class="card full-width">
+
+      <h2>Enrolled Users</h2>
+
+      <table id="usersTable">
+
+        <!-- <thead>
+
+          <tr><th>Name</th><th>Department</th><th>Methods</th><th></th></tr>
+
+        </thead> -->
+
+        <tbody>
+
+          <tr><td colspan="5" class="empty">Loading...</td></tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+</html>
 
     </main>
   </div>
 
  <script type="module" src="js/common.js"></script>
- <script type="module" src="js/enrollment.js"></script>
+ <script src="js/enrollment.js"></script>
+ <!-- <script type="module" src="js/enrollment.js"></script> -->
 </body>
 </html>

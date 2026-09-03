@@ -304,11 +304,11 @@ section.panel-section h2 {
   min-width: 180px;
 }
 
-.form-row {
+/* .form-row {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-}
+} */
 
 .form-row .form-group {
   flex: 1;
@@ -701,4 +701,55 @@ tbody tr:last-child td {
   .login-card {
     padding: 28px;
   }
+}
+
+.header-dropdown {
+  margin-left: 6px;
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+.sheet-header {
+  margin-bottom: 16px;
+}
+
+@media print {
+  .sidebar, .mobile-topbar, .page-header, #printAttendanceBtn,
+  .panel-section > .table-wrapper:first-of-type,
+  section.panel-section:not(#attendanceSheetSection) {
+    display: none !important;
+  }
+  #attendanceSheetSection, #attendanceSheetSection * {
+    visibility: visible;
+  }
+}
+
+#noSessionPlaceholder.placeholder-page {
+  min-height: 0;
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.suggestions-dropdown .suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.suggestions-dropdown .suggestion-item:hover {
+  background-color: var(--color-bg-light);
 }
