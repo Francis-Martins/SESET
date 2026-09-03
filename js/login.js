@@ -1,18 +1,17 @@
 // login.js
-// TODO: Firebase config — paste actual keys here
 const firebaseConfig = {
- apiKey: "AIzaSyCk3Qt5UbIn4YpNP7gitLGG0W4lOH5P3so",
-    authDomain: "ele-tech.firebaseapp.com",
-    projectId: "ele-tech",
-    storageBucket: "ele-tech.firebasestorage.app",
-    messagingSenderId: "859089167137",
-    appId: "1:859089167137:web:dc9e0c8a4a14e24bb05460",
+  apiKey: "AIzaSyCvc2hMrzhWS4nxkLxJdiXyzdrmd_qi2XA",
+  authDomain: "attendancesystem2-4f5db.firebaseapp.com",
+  databaseURL: "https://attendancesystem2-4f5db-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "attendancesystem2-4f5db",
+  storageBucket: "attendancesystem2-4f5db.firebasestorage.app",
+  messagingSenderId: "517801412167",
+  appId: "1:517801412167:web:d786bece2383dfa0b7d362"
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// This page does not include common.js, so Firebase is initialized here directly.
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 

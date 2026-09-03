@@ -39,45 +39,5 @@
   </div>
 
   <script type="module" src="js/login.js"></script>
-  <script src="js/login.js"></script>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { 
-    getAuth, 
-    signInWithEmailAndPassword 
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-  // Paste your config object here
-  const firebaseConfig = {
-    apiKey: "AIzaSyCk3Qt5UbIn4YpNP7gitLGG0W4lOH5P3so",
-    authDomain: "ele-tech.firebaseapp.com",
-    projectId: "ele-tech",
-    storageBucket: "ele-tech.firebasestorage.app",
-    messagingSenderId: "859089167137",
-    appId: "1:859089167137:web:dc9e0c8a4a14e24bb05460"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  const loginForm = document.getElementById("loginForm");
-  const errorMsg = document.getElementById("errorMsg");
-
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Login successful
-        window.location.href = "courses-lectures.html";
-      })
-      .catch((error) => {
-        errorMsg.textContent = "Invalid email or password.";
-        errorMsg.style.display = "block";
-      });
-  });
-</script>
 </body>
 </html>
