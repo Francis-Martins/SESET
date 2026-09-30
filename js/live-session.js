@@ -262,6 +262,7 @@ async function saveSession() {
 
     entries.forEach(([, val]) => {
       const name = val.Name ?? val.name ?? "—";
+      const regNo = val.RegNo ?? val.regNo ?? val.RegistrationNumber ?? val.StudentID ?? "—"; // ADDED
       const recordRef = doc(collection(fs, "attendanceRecords"));
       batch.set(recordRef, {
         sessionId: sessionRef.id,
