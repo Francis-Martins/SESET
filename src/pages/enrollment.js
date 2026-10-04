@@ -3,23 +3,27 @@
 // On successful enroll/delete, mirrors a matching record into Firestore's
 // `students` collection so courses.js / students.js / attendance stay in sync.
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCvc2hMrzhWS4nxkLxJdiXyzdrmd_qi2XA",
-  authDomain: "attendancesystem2-4f5db.firebaseapp.com",
-  databaseURL: "https://attendancesystem2-4f5db-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "attendancesystem2-4f5db",
-};
+import { app, auth, db as fs } from "../config/firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  child,
+  push,
+  set,
+  update,
+  remove,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {
+  doc,
+  setDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const ADMIN_EMAIL = "francismartins810@gmail.com";
-const ADMIN_PASSWORD = "Martins";
-
-firebase.initializeApp(firebaseConfig);
-const rtdb = firebase.database();
-const auth = firebase.auth();
-const fs = firebase.firestore();
-
-const commandsRef = rtdb.ref('commands');
-const usersRef = rtdb.ref('users');
+const rtdb = getDatabase(app);
+const commandsRef = ref(rtdb, 'commands');
+const usersRef = ref(rtdb, 'users');
 
 let busy = false;
 let currentUsers = {};
@@ -78,20 +82,20 @@ function init() {
 
   function enrollFingerprint(name, regNo, dept, onDone) {
     setStatusBox(enrollStatusBox, 'Sending fingerprint enroll command...', 'pending');
-    commandsRef.update({ status: 'pending', message: '', assignedID: null })
-      .then(() => commandsRef.update({ action: 'enroll' }));
+    update(commandsRef, { status: 'pending', message: '', assignedID: null })
+      .then(() => update(commandsRef, { action: 'enroll' }));
 
-    const listener = commandsRef.on('value', (snap) => {
+    const unsubscribe = onValue(commandsRef, (snap) => {
       const data = snap.val() || {};
       if (data.status === 'in_progress') {
         setStatusBox(enrollStatusBox, 'Follow prompts on device screen (fingerprint)...', 'pending');
       } else if (data.status === 'success') {
-        commandsRef.off('value', listener);
+        unsubscribe();
         const fpID = data.assignedID;
         setStatusBox(enrollStatusBox, `Fingerprint enrolled (ID #${fpID}).`, 'success');
         saveUserField(name, regNo, dept, { fingerprintID: fpID }, () => onDone(fpID));
       } else if (data.status === 'failed') {
-        commandsRef.off('value', listener);
+        unsubscribe();
         setStatusBox(enrollStatusBox, `Fingerprint failed: ${data.message || ''}`, 'error');
         lockButtons(false);
       }
@@ -100,22 +104,22 @@ function init() {
 
   function enrollRFID(name, regNo, dept, onDone, existingFpID) {
     setStatusBox(enrollStatusBox, 'Sending RFID enroll command...', 'pending');
-    commandsRef.update({ status: 'pending', message: '', assignedUID: null })
-      .then(() => commandsRef.update({ action: 'enroll_rfid' }));
+    update(commandsRef, { status: 'pending', message: '', assignedUID: null })
+      .then(() => update(commandsRef, { action: 'enroll_rfid' }));
 
-    const listener = commandsRef.on('value', (snap) => {
+    const unsubscribe = onValue(commandsRef, (snap) => {
       const data = snap.val() || {};
       if (data.status === 'in_progress') {
         setStatusBox(enrollStatusBox, 'Tap card/tag on device...', 'pending');
       } else if (data.status === 'success') {
-        commandsRef.off('value', listener);
+        unsubscribe();
         const uid = data.assignedUID;
         setStatusBox(enrollStatusBox, `RFID enrolled (UID ${uid}).`, 'success');
         const fields = { rfidUID: uid };
         if (existingFpID !== undefined) fields.fingerprintID = existingFpID;
         saveUserField(name, regNo, dept, fields, () => onDone(uid));
       } else if (data.status === 'failed') {
-        commandsRef.off('value', listener);
+        unsubscribe();
         setStatusBox(enrollStatusBox, `RFID failed: ${data.message || ''}`, 'error');
         lockButtons(false);
       }
@@ -130,14 +134,14 @@ function init() {
     }, fields);
 
     if (existingKey) {
-      usersRef.child(existingKey).update(fields).then(() => {
+      update(child(usersRef, existingKey), fields).then(() => {
         mirrorToFirestore(existingKey, payload, fields);
         callback();
       });
     } else {
-      const newRef = usersRef.push();
+      const newRef = push(usersRef);
       window._pendingUserKey = newRef.key;
-      newRef.set(payload).then(() => {
+      set(newRef, payload).then(() => {
         mirrorToFirestore(newRef.key, payload, fields);
         callback();
       });
@@ -159,17 +163,17 @@ function init() {
       docData.rfidTagId = latestFields.rfidUID;
     }
 
-    fs.collection('students').doc(key).set(docData, { merge: true })
+    setDoc(doc(fs, 'students', key), docData, { merge: true })
       .catch((err) => console.error('Firestore mirror failed:', err));
   }
 
   function removeFromFirestore(key) {
-    fs.collection('students').doc(key).delete()
+    deleteDoc(doc(fs, 'students', key))
       .catch((err) => console.error('Firestore mirror delete failed:', err));
   }
 
   function finishEnrollFlow() {
-    commandsRef.update({ action: 'none' });
+    update(commandsRef, { action: 'none' });
     lockButtons(false);
     enrollNameInput.value = '';
     enrollRegNoInput.value = '';
@@ -192,15 +196,15 @@ function init() {
 
     if (user.fingerprintID !== undefined && user.fingerprintID !== null) {
       setStatusBox(deleteStatusBox, `Deleting fingerprint ID #${user.fingerprintID}...`, 'pending');
-      commandsRef.update({ status: 'pending', message: '', targetID: user.fingerprintID })
-        .then(() => commandsRef.update({ action: 'delete' }));
+      update(commandsRef, { status: 'pending', message: '', targetID: user.fingerprintID })
+        .then(() => update(commandsRef, { action: 'delete' }));
 
-      const listener = commandsRef.on('value', (snap) => {
+      const unsubscribe = onValue(commandsRef, (snap) => {
         const data = snap.val() || {};
         if (data.status === 'success' || data.status === 'failed') {
-          commandsRef.off('value', listener);
-          commandsRef.update({ action: 'none' });
-          usersRef.child(key).remove();
+          unsubscribe();
+          update(commandsRef, { action: 'none' });
+          remove(child(usersRef, key));
           removeFromFirestore(key);
           setStatusBox(deleteStatusBox, data.status === 'success' ? 'Deleted.' : `Failed: ${data.message}`, data.status);
           lockButtons(false);
@@ -208,7 +212,7 @@ function init() {
       });
     } else {
       // RFID-only user, no sensor slot to clear
-      usersRef.child(key).remove();
+      remove(child(usersRef, key));
       removeFromFirestore(key);
       setStatusBox(deleteStatusBox, 'Deleted.', 'success');
       lockButtons(false);
@@ -217,14 +221,14 @@ function init() {
 
   // ---------- Reset stuck command ----------
   resetBtn.addEventListener('click', () => {
-    commandsRef.update({ action: 'none', status: 'idle', message: '' });
+    update(commandsRef, { action: 'none', status: 'idle', message: '' });
     lockButtons(false);
     setStatusBox(enrollStatusBox, 'Idle.', 'idle');
     setStatusBox(deleteStatusBox, 'Idle.', 'idle');
   });
 
   // ---------- Live users table + delete dropdown ----------
-  usersRef.on('value', (snap) => {
+  onValue(usersRef, (snap) => {
     currentUsers = snap.val() || {};
     usersTableBody.innerHTML = '';
     deleteUserSelect.innerHTML = '<option value="">-- select --</option>';
@@ -247,8 +251,8 @@ function init() {
         <td>${u.regNo || ''}</td>
         <td>${u.department || ''}</td>
         <td>${badges.join('')}</td>
-        <td><button class="row-delete" data-key="${key}">Delete</button></td>
-      `;
+        <td><button class="btn btn-danger btn-sm row-delete" data-key="${key}">Delete</button></td>
+              `;
       usersTableBody.appendChild(tr);
 
       const opt = document.createElement('option');
@@ -269,10 +273,16 @@ function init() {
   });
 }
 
-if (ADMIN_EMAIL !== "YOUR_ADMIN_EMAIL") {
-  auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD)
-    .then(init)
-    .catch(err => alert('Auth failed: ' + err.message));
-} else {
-  init();
-}
+// ---------- Start once the user is signed in ----------
+// Uses the session from the login page (no hardcoded admin credentials).
+let started = false;
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "../index.html";
+    return;
+  }
+  if (!started) {
+    started = true;
+    init();
+  }
+});

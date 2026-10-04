@@ -1,6 +1,6 @@
 // courses.js — Courses page only
-import { requireAuth } from "./common.js";
-import { getCourses, createCourse, isCourseCodeTaken } from "./courses-service.js";
+import { requireAuth } from "../shared/auth.js";
+import { getCourses, createCourse, isCourseCodeTaken } from "../services/courses-service.js";
 requireAuth();
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,19 +1,6 @@
 // login.js
-const firebaseConfig = {
-  apiKey: "AIzaSyCvc2hMrzhWS4nxkLxJdiXyzdrmd_qi2XA",
-  authDomain: "attendancesystem2-4f5db.firebaseapp.com",
-  databaseURL: "https://attendancesystem2-4f5db-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "attendancesystem2-4f5db",
-  storageBucket: "attendancesystem2-4f5db.firebasestorage.app",
-  messagingSenderId: "517801412167",
-  appId: "1:517801412167:web:d786bece2383dfa0b7d362"
-};
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth } from "../config/firebase.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
@@ -30,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        window.location.href = "courses.html";
+        window.location.href = "pages/courses.html";
       })
       .catch((error) => {
         errorBox.textContent = getFriendlyError(error.code);

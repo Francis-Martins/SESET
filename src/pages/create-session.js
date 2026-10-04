@@ -1,19 +1,11 @@
 // create-session.js — Create Session page only
-import { requireAuth } from "./common.js";
-import { getCourses, startLectureSession } from "./courses-service.js";
+import { requireAuth } from "../shared/auth.js";
+import { getCourses, startLectureSession } from "../services/courses-service.js";
 
-import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { app } from "../config/firebase.js";
 import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCvc2hMrzhWS4nxkLxJdiXyzdrmd_qi2XA",
-  databaseURL: "https://attendancesystem2-4f5db-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "attendancesystem2-4f5db"
-};
-
-const rtdbApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const rtdb = getDatabase(rtdbApp);
-
+const rtdb = getDatabase(app);
 requireAuth();
 
 document.addEventListener("DOMContentLoaded", () => {

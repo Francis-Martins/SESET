@@ -1,7 +1,8 @@
 // attendance-search.js
 // Attendance Search page — wired to Firestore.
 
-import { db, requireAuth } from "./common.js";
+import { db } from "../config/firebase.js";
+import { requireAuth } from "../shared/auth.js";
 import {
   collection,
   getDocs,
@@ -73,8 +74,11 @@ async function countTotalLectures(courseId, dateFrom, dateTo) {
   try {
     // NOTE: This query may require a Firestore composite index —
     // Firestore will provide a direct link in the browser console error to create it automatically.
-    const q = query(collection(db, "lectures"), where("courseId", "==", courseId));
-    const snapshot = await getDocs(q);
+    const q = query(
+      collection(db, "lectures"),
+      where("courseId", "==", courseId),
+      where("status", "==", "completed")
+    );    const snapshot = await getDocs(q);
 
     let count = 0;
     snapshot.forEach((docSnap) => {
@@ -117,7 +121,6 @@ async function handleSearch(e) {
   resultsArea.innerHTML = `<p style="color:#999;">Searching...</p>`;
 
   const student = await resolveStudent(studentQuery);
-
   if (student && courseId) {
     await renderStudentAndCourse(student, courseId, courseTitle, dateFrom, dateTo);
     printBtn.style.display = "inline-flex";
@@ -140,9 +143,9 @@ async function renderStudentAndCourse(student, courseId, courseTitle, dateFrom, 
   try {
     // NOTE: This query may require a Firestore composite index —
     // Firestore will provide a direct link in the browser console error to create it automatically.
-    const q = query(
-      collection(db, "attendanceRecords"),
-      where("studentId", "==", student.id),
+      const q = query(
+      collection(db, "attendanceLog"),
+      where("regNumber", "==", student.regNo),
       where("courseId", "==", courseId)
     );
     const snapshot = await getDocs(q);
@@ -171,7 +174,7 @@ async function renderStudentAndCourse(student, courseId, courseTitle, dateFrom, 
       records
         .sort((a, b) => (a.date + a.time) > (b.date + b.time) ? 1 : -1)
         .forEach((r) => {
-          const time = r.time?.toDate ? r.time.toDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—";
+          const time = r.time || "—";
           html += `<tr><td>${r.date}</td><td>${time}</td><td>${capitalize(r.mode)}</td></tr>`;
         });
     }
@@ -189,7 +192,7 @@ async function renderStudentOnly(student, dateFrom, dateTo) {
   const resultsArea = document.getElementById("resultsArea");
 
   try {
-    const q = query(collection(db, "attendanceRecords"), where("studentId", "==", student.id));
+    const q = query(collection(db, "attendanceLog"), where("regNumber", "==", student.regNo));
     const snapshot = await getDocs(q);
 
     const recordsByCourseId = {};
@@ -197,7 +200,7 @@ async function renderStudentOnly(student, dateFrom, dateTo) {
       const r = docSnap.data();
       if (!isWithinDateRange(r.date, dateFrom, dateTo)) return;
       if (!recordsByCourseId[r.courseId]) {
-        recordsByCourseId[r.courseId] = { courseTitle: r.courseTitle, count: 0 };
+        recordsByCourseId[r.courseId] = { courseTitle: r.course || "Unknown course", count: 0 };
       }
       recordsByCourseId[r.courseId].count++;
     });
@@ -229,21 +232,20 @@ async function renderStudentOnly(student, dateFrom, dateTo) {
     resultsArea.innerHTML = `<p style="color:#999;">Failed to load results.</p>`;
   }
 }
-
 // ---- (c) Course only ----
 async function renderCourseOnly(courseId, courseTitle, dateFrom, dateTo) {
   const resultsArea = document.getElementById("resultsArea");
 
   try {
     // Get attendance counts per student for this course
-    const q = query(collection(db, "attendanceRecords"), where("courseId", "==", courseId));
-    const snapshot = await getDocs(q);
+    const q = query(collection(db, "attendanceLog"), where("courseId", "==", courseId));    const snapshot = await getDocs(q);
 
-    const attendedByStudentId = {};
+    const attendedByRegNo = {};
     snapshot.forEach((docSnap) => {
       const r = docSnap.data();
       if (!isWithinDateRange(r.date, dateFrom, dateTo)) return;
-      attendedByStudentId[r.studentId] = (attendedByStudentId[r.studentId] || 0) + 1;
+      if (!r.regNumber) return;
+      attendedByRegNo[r.regNumber] = (attendedByRegNo[r.regNumber] || 0) + 1;
     });
 
     // Fetch ALL students so 0% cases are visible
@@ -254,7 +256,7 @@ async function renderCourseOnly(courseId, courseTitle, dateFrom, dateTo) {
       roster.push({
         name: s.name,
         regNo: s.regNo,
-        attended: attendedByStudentId[docSnap.id] || 0
+        attended: attendedByRegNo[s.regNo] || 0
       });
     });
 

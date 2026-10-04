@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Live Session — Attendance System</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="newlivesession.css" />
 </head>
 <body>
 
@@ -43,7 +41,7 @@
         <a href="lecture-history.html">
            Lecture History
         </a>
-        <a href="enrollment.html">
+        <a href="attendance-search.html">search</a>        <a href="enrollment.html">
            Enroll
         </a>
         <a href="reports.html">
@@ -51,7 +49,7 @@
         </a>
       </div>
       <div class="sidebar-logout">
-        <a href="index.html">
+        <a href="../index.html">
            Logout
         </a>
       </div>
@@ -65,37 +63,33 @@
         <a href="create-session.html" class="btn btn-primary">Go to Create Session</a>
       </div>
       <div id="liveSessionContent" style="display: none;">
-        <header>
-          <div class="title-block">
-            <h1>Attendance Log</h1>
-          </div>
-          <div class="meta">
-            <div id="status" class="status pending">Connecting…</div>
-          </div>
-        </header>
+               <div class="session-header">
+          <h1>Attendance Log</h1>
+          <div id="status" class="status pending">Connecting…</div>
+        </div>
         <div class="toolbar">
           <span id="count">0 records</span>
           <span>Auto-updates live</span>
-          <button id="saveBtn" class="save-btn">Save Session</button>
+          <button id="saveBtn" class="btn btn-primary btn-sm">Save Session</button>        </div>
+              <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Name</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Name</th>
-              <th>Mode</th>
-            </tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
         <div id="empty">No attendance records yet.</div>
       </div>
     </main>
   </div>
   </div>
-  <script type="module" src="newlivesession.js"></script>
-  <script type = "module" src="js/common.js"></script>
-  <!-- <script type="module" src="js/live-session.js"></script> -->
+<script type="module" src="../src/pages/live-session.js"></script>
+<script type = "module" src="../src/shared/layout.js"></script>
 </body>
 </html>

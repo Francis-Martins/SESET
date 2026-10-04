@@ -1,21 +1,16 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { requireAuth } from "../shared/auth.js";
+import { app, db as fs } from "../config/firebase.js";
 import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import {
-  getFirestore,
   collection,
   doc,
   getDoc,
   updateDoc,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyCvc2hMrzhWS4nxkLxJdiXyzdrmd_qi2XA",
-  databaseURL: "https://attendancesystem2-4f5db-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "attendancesystem2-4f5db"
-};
-const app = initializeApp(firebaseConfig);
+
 const rtdb = getDatabase(app);
-const fs = getFirestore(app);
+requireAuth();
 const statusEl = document.getElementById("status");
 const tbody = document.getElementById("rows");
 const emptyEl = document.getElementById("empty");

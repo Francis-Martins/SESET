@@ -1,8 +1,8 @@
 // reports.js
 // Reports & Analysis — course + student attendance lookup.
 
-import { requireAuth } from "./common.js";
-import { getCourses, getStudents, getCourseAttendanceReport } from "./courses-service.js";
+import { requireAuth } from "../shared/auth.js";
+import { getCourses, getStudents, getCourseAttendanceReport } from "../services/courses-service.js";
 
 requireAuth();
 

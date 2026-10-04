@@ -1,6 +1,6 @@
 // lecture-history.js — Lecture History page only
-import { requireAuth } from "./common.js";
-import { getLectureHistory, getAttendanceForLecture } from "./courses-service.js";
+import { requireAuth } from "../shared/auth.js";
+import { getLectureHistory, getAttendanceForLecture } from "../services/courses-service.js";
 
 requireAuth();
 

@@ -2,7 +2,7 @@
 // Shared Firestore data layer for courses, lectures, and sessions.
 // Used by: courses.js, create-session.js, lecture-history.js
 
-import { db } from "./common.js";
+import { db } from "../config/firebase.js";
 import {
   collection,
   addDoc,

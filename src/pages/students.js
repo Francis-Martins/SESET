@@ -1,7 +1,8 @@
 // students.js
 // Students page — wired to Firestore.
 
-import { db, requireAuth } from "./common.js";
+import { db } from "../config/firebase.js";
+import { requireAuth } from "../shared/auth.js";
 import {
   collection,
   getDocs

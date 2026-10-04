@@ -8,9 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="css/style.css" />
-</head>
+  <link rel="stylesheet" href="../assets/css/style.css"/></head>
 <body>
 
   <div class="app-shell">
@@ -30,35 +28,17 @@
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-brand"></div>
       <div class="sidebar-nav">
-         <a href="courses.html">
-           Live Session
-        </a>
-        <a href="courses.html">
-           Courses
-        </a>
-        <a href="students.html">
-           Students
-        </a>
-
-        <a href="attendance-search.html" class="active">
-        Create Session
-        </a>
-        <a href="students.html">
-           Lecture History
-        </a>
-        <a href="students.html">
-           Search
-        </a>
-         <a href="reports.html">
-           Enroll
-        </a>
-        <a href="reports.html">
-           Reports & Analysis
-        </a>
-       
+        <a href="live-session.html">Live Session</a>
+        <a href="courses.html">Courses</a>
+        <a href="students.html">Students</a>
+        <a href="create-session.html">Create Session</a>
+        <a href="lecture-history.html">Lecture History</a>
+        <a href="attendance-search.html" class="active">search</a>
+        <a href="enrollment.html">Enroll</a>
+        <a href="reports.html">Reports &amp; Analysis</a>
       </div>
       <div class="sidebar-logout">
-        <a href="index.html">
+        <a href="../index.html">
            Logout
         </a>
       </div>
@@ -116,7 +96,7 @@
     </main>
   </div>
 
-  <script type="module" src="js/common.js"></script>
-  <script type="module" src="js/attendance-search.js"></script>
+  <script type="module" src="../src/shared/layout.js"></script>
+  <script type="module" src="../src/pages/attendance-search.js"></script>
 </body>
 </html>

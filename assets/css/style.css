@@ -113,7 +113,11 @@ section.panel-section h2 {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  overflow-y: auto;
 }
 
 .sidebar-brand {
@@ -752,4 +756,136 @@ tbody tr:last-child td {
 
 .suggestions-dropdown .suggestion-item:hover {
   background-color: var(--color-bg-light);
+}
+
+/* =========================================
+   14. ENROLLMENT PAGE SPECIFIC
+   ========================================= */
+:root {
+  --color-danger: #A3452F;
+  --color-danger-dark: #8A3A27;
+}
+
+
+.enroll-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.enroll-wrap .card .table-wrapper {
+  border: none;
+}
+
+
+.enroll-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background-color: var(--color-danger-dark);
+  border-color: var(--color-danger-dark);
+}
+
+.status-box {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-light);
+  color: #777;
+  font-size: 0.9rem;
+  min-height: 18px;
+}
+
+.status-box.pending {
+  background-color: var(--color-alert-warning-bg);
+  border-color: var(--color-alert-warning-border);
+  color: var(--color-alert-warning-text);
+}
+
+.status-box.success {
+  background-color: #E3F2E9;
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.status-box.error,
+.status-box.failed {
+  background-color: #F8E9E5;
+  border-color: #D9A89B;
+  color: var(--color-danger);
+}
+
+.badge.fp {
+  background-color: #E6ECF5;
+  color: #3A5A99;
+}
+
+.badge.rfid {
+  background-color: #E3F2E9;
+  color: var(--color-primary-dark);
+}
+
+.badge + .badge {
+  margin-left: 4px;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  padding: 16px 0;
+}
+
+/* =========================================
+   LIVE SESSION PAGE SPECIFIC
+   ========================================= */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #999;
+}
+
+.status.live::before { background: var(--color-primary); }
+.status.pending::before { background: #C9A63F; }
+.status.error::before { background: var(--color-danger); }
+.status.error { color: var(--color-danger); }
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0 12px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+#empty {
+  display: none;
+  text-align: center;
+  padding: 48px 0;
+  color: #777;
+  font-size: 0.9rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  margin-top: 12px;
 }
