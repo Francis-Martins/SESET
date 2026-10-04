@@ -670,7 +670,7 @@ tbody tr:last-child td {
     display: block;
   }
 
-  .mobile-topbar {
+    .mobile-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -679,6 +679,9 @@ tbody tr:last-child td {
     color: var(--color-white);
     font-family: var(--font-heading);
     font-size: 1.1rem;
+    position: sticky;
+    top: 0;
+    z-index: 80;
   }
 
   .app-shell {
