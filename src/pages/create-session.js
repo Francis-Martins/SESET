@@ -40,8 +40,11 @@ async function loadCourseOptions() {
   }
 }
 
+let isStarting = false;
+
 async function handleStartSession(e) {
   e.preventDefault();
+  if (isStarting) return; // ignore extra clicks while a session is being created
 
   const courseSelect = document.getElementById("sessionCourse");
   const courseId = courseSelect.value;
@@ -56,6 +59,15 @@ async function handleStartSession(e) {
 
   if (!courseId || !lectureTitle || !date || !startTime || !endTime) return;
 
+  // Lock the button so a second click can't create another lecture
+  isStarting = true;
+  const submitBtn = e.submitter || e.target.querySelector("button");
+  const originalLabel = submitBtn ? submitBtn.textContent : "";
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Starting…";
+  }
+
   try {
     // Clear any leftover attendance records before starting the new session
     await remove(ref(rtdb, "attendance"));
@@ -65,6 +77,12 @@ async function handleStartSession(e) {
   } catch (error) {
     console.error("Error starting session:", error);
     showSessionError("Failed to start session. Please try again.");
+    // Unlock so the user can retry after a failure
+    isStarting = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
   }
 }
 
@@ -79,3 +97,8 @@ function showSessionError(message) {
   errorBox.textContent = message;
   errorBox.style.display = "block";
 }
+// If the browser restores this page from its back/forward cache, reload it
+// so the Start button isn't left stuck on "Starting…".
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) location.reload();
+});
