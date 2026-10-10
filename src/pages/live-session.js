@@ -22,6 +22,21 @@ function setStatus(text, tone) {
   statusEl.textContent = text;
   statusEl.className = "status " + (tone || "");
 }
+// Keep one record per student (first scan wins).
+// Realtime Database push keys are chronological, so entry order = scan order.
+function dedupeRecords(data) {
+  const seen = new Set();
+  const unique = [];
+  for (const [, val] of Object.entries(data || {})) {
+    if (typeof val !== "object" || val === null) continue;
+    const name = val.Name ?? val.name ?? "";
+    const key = (val.RegNo || name).toString().trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    unique.push({ key, val });
+  }
+  return unique;
+}
 function fmtRow(val) {
   const date = val.Date ?? val.date ?? "—";
   const time = val.Time ?? val.time ?? "—";
@@ -36,21 +51,17 @@ function fmtRow(val) {
 }
 function render(data) {
   tbody.innerHTML = "";
-  if (!data) {
+  const records = dedupeRecords(data).reverse(); // newest first
+  if (records.length === 0) {
     emptyEl.style.display = "block";
     countEl.textContent = "0 records";
     return;
   }
-  const entries = Object.entries(data);
   emptyEl.style.display = "none";
-  countEl.textContent = entries.length + (entries.length === 1 ? " record" : " records");
-  entries
-    .sort((a, b) => (b[0] > a[0] ? 1 : -1))
-    .forEach(([, val]) => {
-      if (typeof val === "object" && val !== null) {
-        tbody.insertAdjacentHTML("beforeend", fmtRow(val));
-      }
-    });
+  countEl.textContent = records.length + (records.length === 1 ? " record" : " records");
+  records.forEach(({ val }) => {
+    tbody.insertAdjacentHTML("beforeend", fmtRow(val));
+  });
 }
 // ---- Load the active session info (set by create-session.js) ----
 // ---- Load the active session info (set by create-session.js) ----
@@ -102,8 +113,8 @@ async function saveSession() {
     alert("No active session found. Please start a session from Create Session first.");
     return;
   }
-  const dataToSave = currentData;
-  const recordCount = Object.keys(dataToSave).length;
+  const uniqueRecords = dedupeRecords(currentData);
+const recordCount = uniqueRecords.length;
   const course = activeSession.courseTitle;
   const dateInput = new Date().toISOString().slice(0, 10);
   saveBtn.disabled = true;
@@ -120,22 +131,23 @@ async function saveSession() {
       savedAt: new Date(),
       recordCount
     });
-    Object.entries(dataToSave).forEach(([, val]) => {
-      const name = val.Name ?? val.name ?? "";
-      const recordRef = doc(collection(fs, "attendanceLog"));
-      batch.set(recordRef, {
-        sessionId: sessionRef.id,
-        course,
-        courseId: activeSession.courseId,
-        lectureId: activeSession.lectureId,
-        date: dateInput,
-        name,
-        nameLower: name.toLowerCase(),
-        regNumber:val.RegNo ?? "",
-        time: val.Time ?? val.time ?? "",
-        mode: val.Mode ?? val.mode ?? ""
-      });
-    });
+    uniqueRecords.forEach(({ key, val }) => {
+  const name = val.Name ?? val.name ?? "";
+  // One log doc per student per lecture
+  const recordRef = doc(fs, "attendanceLog", `${activeSession.lectureId}_${key}`);
+  batch.set(recordRef, {
+    sessionId: sessionRef.id,
+    course,
+    courseId: activeSession.courseId,
+    lectureId: activeSession.lectureId,
+    date: dateInput,
+    name,
+    nameLower: name.toLowerCase(),
+    regNumber: val.RegNo ?? "",
+    time: val.Time ?? val.time ?? "",
+    mode: val.Mode ?? val.mode ?? ""
+  });
+});
     // Mark the lecture as completed and clear the active session flag
     if (activeSession.lectureId) {
       batch.update(doc(fs, "lectures", activeSession.lectureId), { status: "completed" });

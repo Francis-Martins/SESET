@@ -128,14 +128,16 @@ export async function getAttendanceForLecture(lectureId) {
 
 export async function getStudents() {
   const snapshot = await getDocs(collection(db, "students"));
-  return snapshot.docs.map((docSnap) => {
-    const student = docSnap.data();
-    return {
-      id: docSnap.id,
-      name: student.name || "",
-      regNo: student.regNo || ""
-    };
-  });
+  return snapshot.docs
+    .map((docSnap) => {
+      const student = docSnap.data();
+      return {
+        id: docSnap.id,
+        name: student.name || "",
+        regNo: student.regNo || ""
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
 }
 
 // ---- Course Attendance Report ----

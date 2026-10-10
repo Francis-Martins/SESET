@@ -53,7 +53,12 @@ function init() {
     deleteBtn.disabled = lock;
     busy = lock;
   }
-
+function findByRegNo(regNo) {
+  const target = regNo.trim().toLowerCase();
+  return Object.values(currentUsers).find(
+    (u) => (u.regNo || '').trim().toLowerCase() === target
+  );
+}
   // ---------- Enroll ----------
   enrollBtn.addEventListener('click', () => {
     const name = enrollNameInput.value.trim();
@@ -61,7 +66,11 @@ function init() {
     if (!name) { alert('Please enter a name first.'); return; }
     if (!regNo) { alert('Please enter a Reg No first.'); return; }
     if (busy) { alert('A command is already running.'); return; }
-
+    const existing = findByRegNo(regNo);
+    if (existing) {
+      alert(`Reg No "${regNo}" is already enrolled${existing.name ? ' for ' + existing.name : ''}.`);
+      return;
+    }
     const method = enrollMethodSelect.value;
     const pendingName = name;
     const pendingRegNo = regNo;

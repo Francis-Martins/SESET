@@ -5,6 +5,8 @@ import { getCourses, startLectureSession } from "../services/courses-service.js"
 import { app } from "../config/firebase.js";
 import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+import { db } from "../config/firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const rtdb = getDatabase(app);
 requireAuth();
 
@@ -69,6 +71,16 @@ async function handleStartSession(e) {
   }
 
   try {
+    const current = await getDoc(doc(db, "systemStatus", "current"));
+      if (current.exists() && current.data().sessionActive) {
+      showSessionError("A session is already active. Save or end it from Live Session first.");
+      isStarting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+      return;
+      }
     // Clear any leftover attendance records before starting the new session
     await remove(ref(rtdb, "attendance"));
 
